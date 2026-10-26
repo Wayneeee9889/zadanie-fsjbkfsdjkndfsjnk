@@ -193,11 +193,13 @@ SELECT DISTINCT * FROM `produkty`;
 C7.  Wyswietl liste miast, w ktorych mieszkaja sprzedawcy,
      kazde tylko raz.                                                (4 wiersze)
 
-
+SELECT DISTINCT miasto FROM `sprzedawcy`;
 
 
 C8.  Wyswietl produkty z kategorii sypkie, posortowane
      po cenie malejaco.                                              (4 wiersze)
+
+SELECT * FROM produkty WHERE kategoria = "sypkie" ORDER BY cena DESC;
 
 
 ===============================================================================
@@ -214,23 +216,56 @@ SELECT COUNT(*) FROM produkty;
 
 D2.  Policz, ilu jest sprzedawcow.                                    (wynik: 6)
 
+
+SELECT COUNT(imie) FROM `sprzedawcy`;
+
+
 D3.  Policz, ile transakcji jest w bazie.                            (wynik: 20)
+
+
+SELECT COUNT(*) FROM `sprzedaz`;
+
 
 D4.  Policz, ile produktow nalezy do kategorii nabial.                (wynik: 3)
 
+
+SELECT COUNT(*) FROM `produkty` WHERE kategoria = "nabiał";
+
+
 D5.  Podaj cene najdrozszego produktu.                            (wynik: 22.00)
+
+
+SELECT MAX(cena) FROM `produkty`;
+
 
 D6.  Podaj cene najtanszego produktu.                              (wynik: 1.20)
 
+
+SELECT MIN(cena) FROM `produkty`;
+
+
 D7.  Policz, ile sztuk towaru sprzedano lacznie.                    (wynik: 104)
 
+
+SELECT SUM(ilosc) FROM `sprzedaz`;
+
+
 D8.  Podaj srednia cene produktu.                     (wynik okolo 6.5636363636)
+
+
+SELECT AVG(cena) FROM produkty;
+
 
 D9.  To samo co D8, ale zaokraglij wynik do dwoch miejsc
      po przecinku.                                                 (wynik: 6.56)
      Podpowiedz: ROUND(AVG(cena), 2)
 
+SELECT ROUND(AVG(cena), 2) FROM produkty;
+
+
 D10. Policz, ile transakcji przeprowadzil sprzedawca o numerze 1.      (wynik: 5)
+
+SELECT COUNT(id_sprzedazy) FROM `sprzedaz` WHERE id_sprz = 1;
 
 
 ===============================================================================
@@ -240,20 +275,33 @@ CZESC E. GRUPOWANIE
 Grupowanie to liczenie osobno dla kazdej wartosci.
 
 E1.  Policz, ile produktow jest w kazdej kategorii.                  (5 wierszy)
-     Podpowiedz: SELECT kategoria, COUNT(*) FROM produkty
+     
+
+SELECT kategoria, COUNT(*) FROM produkty
                  GROUP BY kategoria;
+
 
 E2.  Podaj srednia cene w kazdej kategorii.                          (5 wierszy)
 
+SELECT kategoria, COUNT(*), AVG(cena) FROM produkty
+                 GROUP BY kategoria;
+
+
 E3.  Policz, ilu sprzedawcow mieszka w kazdym miescie.               (4 wiersze)
+
+SELECT miasto, COUNT(imie) FROM `sprzedawcy` GROUP BY miasto;
 
 E4.  Policz, ile transakcji przeprowadzil kazdy sprzedawca.
      Wystarczy numer, bez nazwiska.                                  (5 wierszy)
      Zastanow sie, dlaczego wyszlo piec wierszy,
      skoro sprzedawcow jest szesciu.
 
+SELECT id_sprz , COUNT(id_sprzedazy) FROM `sprzedaz` GROUP BY id_sprz;
+
 E5.  Dla kazdego produktu policz, ile razy sie sprzedal.
      Wystarczy numer produktu.                                      (10 wierszy)
+
+SELECT id_prod, COUNT(ilosc) FROM `sprzedaz` GROUP BY id_prod;
 
 
 ===============================================================================
@@ -274,9 +322,15 @@ F1.  Przepisz i uruchom ponizsze zapytanie.                         (20 wierszy)
 F2.  Zrob to samo, ale zamiast nazwy produktu pokaz nazwisko
      sprzedawcy.                                                    (20 wierszy)
 
+SELECT sprzedaz.id_sprzedazy, sprzedawcy.nazwisko, sprzedaz.ilosc FROM sprzedaz JOIN sprzedawcy ON sprzedaz.id_sprz = sprzedawcy.id_sprz;
+
+
 F3.  Polacz wszystkie trzy tabele: pokaz nazwe produktu,
      nazwisko sprzedawcy, ilosc i date.                             (20 wierszy)
      Podpowiedz: drugie zlaczenie dopisujesz jako kolejna linie JOIN.
+
+
+SELECT produkty.nazwa, sprzedawcy.nazwisko, sprzedaz.ilosc, sprzedaz.data_sp FROM sprzedaz JOIN sprzedawcy ON sprzedaz.id_sprz = sprzedawcy.id_sprz JOIN produkty ON sprzedaz.id_prod = produkty.id_prod;
 
 
 ===============================================================================
